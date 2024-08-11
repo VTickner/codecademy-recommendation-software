@@ -58,28 +58,34 @@ def get_genre(possible_genres):
             print("There were too many matches, please try to type more letters to select a single genre.")
             return get_genre(possible_genres)
         else:
+            # TODO: remove test multiple genre data
+            selected_genres.push("Crime") # TEST FOR MULTIPLE GENRES, HAVING ONE ALREADY IN LIST
+            selected_genres.push("Drama") # TEST FOR MULTIPLE GENRES, HAVING ONE ALREADY IN LIST
             selected_genres.push(genre_match[0])
-            print(f"Finding recommendations for the genre: {selected_genres.peek()}")
             return selected_genres
 
 def get_recommendations(selected_genres):
     if selected_genres:
-        # TEMP TEST CHECK TO MAKE SURE A GENRE WAS SENT TO FUNCTION AND HOW MANY GENRES IN THE STACK
-        print(f"In get_recommendations() using genre {selected_genres.peek()}")
-        selected_genres.push("Crime") # TEST FOR MULTIPLE GENRES, HAVING ONE ALREADY IN LIST
-        
         number_genres = selected_genres.size
         current_genre = selected_genres.top_item
         recommendations = []
+        genre_str = ""
 
         while current_genre is not None:
             current_genre_value = current_genre.get_value()
-            print(current_genre_value) # TEST
+            genre_str += current_genre_value + ", "
             recommendations += ([key for key, value in tv_shows.items() if current_genre_value in value.split(", ")])
-            print(recommendations)
-            sorted_recommendations = sorted(list(set(show for show in recommendations if recommendations.count(show) == number_genres)))
-            print(sorted_recommendations)
+            sorted_recommendations = sorted(list(set(show for show in recommendations if recommendations.count(show) == number_genres))) # only get shows that match all genres
             current_genre = current_genre.get_next_node()
+
+        print(f"\nFinding TV show recommendations that match the genre(s) - {genre_str[:-2]}:")
+        if len(sorted_recommendations) == 0 and number_genres > 1:
+            last_genre = selected_genres.pop()
+            print(f"There were {len(sorted_recommendations)} show recommendations for those genres. Removing the last genre added: {last_genre}")
+            return get_recommendations(selected_genres)
+        else:
+            for show in sorted_recommendations:
+                print(f"    {show}")
     else:
         print("ERROR: NO GENRE SELECTED") # should already be caught by len(genre_match) == 0 in get_genre()
 
