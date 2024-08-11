@@ -64,8 +64,22 @@ def get_genre(possible_genres):
 
 def get_recommendations(selected_genres):
     if selected_genres:
-        # TEMP CHECK TO MAKE SURE A GENRE WAS SENT TO FUNCTION
+        # TEMP TEST CHECK TO MAKE SURE A GENRE WAS SENT TO FUNCTION AND HOW MANY GENRES IN THE STACK
         print(f"In get_recommendations() using genre {selected_genres.peek()}")
+        selected_genres.push("Crime") # TEST FOR MULTIPLE GENRES, HAVING ONE ALREADY IN LIST
+        
+        number_genres = selected_genres.size
+        current_genre = selected_genres.top_item
+        recommendations = []
+
+        while current_genre is not None:
+            current_genre_value = current_genre.get_value()
+            print(current_genre_value) # TEST
+            recommendations += ([key for key, value in tv_shows.items() if current_genre_value in value.split(", ")])
+            print(recommendations)
+            sorted_recommendations = sorted(list(set(show for show in recommendations if recommendations.count(show) == number_genres)))
+            print(sorted_recommendations)
+            current_genre = current_genre.get_next_node()
     else:
         print("ERROR: NO GENRE SELECTED") # should already be caught by len(genre_match) == 0 in get_genre()
 
