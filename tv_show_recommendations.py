@@ -58,9 +58,6 @@ def get_genre(possible_genres):
             print("There were too many matches, please try to type more letters to select a single genre.")
             return get_genre(possible_genres)
         else:
-            # TODO: remove test multiple genre data
-            selected_genres.push("Crime") # TEST FOR MULTIPLE GENRES, HAVING ONE ALREADY IN LIST
-            selected_genres.push("Drama") # TEST FOR MULTIPLE GENRES, HAVING ONE ALREADY IN LIST
             selected_genres.push(genre_match[0])
             return selected_genres
 
@@ -81,13 +78,50 @@ def get_recommendations(selected_genres):
         print(f"\nFinding TV show recommendations that match the genre(s) - {genre_str[:-2]}:")
         if len(sorted_recommendations) == 0 and number_genres > 1:
             last_genre = selected_genres.pop()
-            print(f"There were {len(sorted_recommendations)} show recommendations for those genres. Removing the last genre added: {last_genre}")
+            print(f"There were {len(sorted_recommendations)} show recommendations for those genres. \nRemoving the last genre added: {last_genre}")
             return get_recommendations(selected_genres)
+        elif len(sorted_recommendations) > 5:
+            print(f"There are {len(sorted_recommendations)} show recommendations for those genre(s).")
+            filter_more =input("Do you wish to filter recommendations by another genre? (Y/N): ").upper()
+            
+            while filter_more != "Y" and filter_more != "N":
+                filter_more = input("Please type in Y or N?: ").upper()
+
+            if filter_more == "N":
+                for show in sorted_recommendations:
+                    print(f"    {show}")
+
+                while not selected_genres.is_empty():
+                    selected_genres.pop()
+                go_again()
+            elif filter_more == "Y":
+                genre_match = get_genre_list()
+                get_recommendations(genre_match)
+            else:
+                print("ERROR: USER INPUT") # should already be caught by while loop
         else:
             for show in sorted_recommendations:
                 print(f"    {show}")
+
+            while not selected_genres.is_empty():
+                selected_genres.pop()
+            go_again()
     else:
         print("ERROR: NO GENRE SELECTED") # should already be caught by len(genre_match) == 0 in get_genre()
+
+def go_again():
+    user_answer = input("\nDo you wish to start a new recommendation search? (Y/N): ").upper()
+    while user_answer != "Y" and user_answer != "N":
+        user_answer = input("Please type in Y or N?: ").upper()
+
+    if user_answer == "N":
+        exit()
+    elif user_answer == "Y":
+        genre_match = get_genre_list()
+        get_recommendations(genre_match)
+    else:
+        print("ERROR: USER INPUT") # should already be caught by while loop
+        return go_again()
 
 welcome()
 genre_match = get_genre_list()
