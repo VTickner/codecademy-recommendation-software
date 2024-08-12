@@ -11,30 +11,23 @@ def welcome():
     print("Recommendations are chosen from the genre types that you select. So let's get started...\n")
 
 def get_genre_list():
-    initial = input("Type in the first letter of the genre that you are interested in, then press enter, to see if it's here: ").strip()
-
-    while len(initial) != 1 or not initial.isalpha():
-        initial = input("Please type in a single letter: ").strip()
+    initial = validate_input(input("Type in the first letter of the genre that you are interested in, then press enter, to see if it's here: "), "initial")
         
-    possible_genres = [tag for tag in sorted_genres if tag.startswith(initial.upper())]
+    possible_genres = [tag for tag in sorted_genres if tag.startswith(initial)]
 
     if len(possible_genres) == 0:
-        print(f"There were no genre matches starting with {initial.upper()}. Please try again...")
+        print(f"There were no genre matches starting with {initial}. Please try again...")
         return get_genre_list()
     
-    display_possible_genres = f"There are the following genre matches starting with the letter {initial.upper()}: {', '.join(possible_genres)}"
+    display_possible_genres = f"There are the following genre matches starting with the letter {initial}: {', '.join(possible_genres)}"
     print(display_possible_genres)
 
-    user_answer = input("\nDo you wish to select a genre from the above list? (Y/N): ")
-    user_answer = check_yes_no(user_answer)
+    user_answer = validate_input(input("\nDo you wish to select a genre from the above list? (Y/N): "), "Y/N")
 
     if user_answer == "N":
         return get_genre_list()
-    elif user_answer == "Y":
-        return get_genre(possible_genres)
     else:
-        print("ERROR: USER INPUT") # should already be caught by while loop
-        return get_genre_list()
+        return get_genre(possible_genres)
 
 def get_genre(possible_genres):
     if len(possible_genres) == 1:
@@ -42,8 +35,7 @@ def get_genre(possible_genres):
         print(f"Finding recommendations for the genre: {selected_genres.peek()}")
         return selected_genres
     else:
-        genre = input("Type in the first few letters of the genre you wish to select from the above list: ")
-        genre = check_is_letters(genre)
+        genre = validate_input(input("Type in the first few letters of the genre you wish to select from the above list: "), "letters")
 
         genre_match = [tag for tag in possible_genres if tag.startswith(genre)]
 
@@ -78,8 +70,7 @@ def get_recommendations(selected_genres):
             return get_recommendations(selected_genres)
         elif len(sorted_recommendations) > 5:
             print(f"There are {len(sorted_recommendations)} show recommendations for those genre(s).")
-            filter_more =input("Do you wish to filter recommendations by another genre? (Y/N): ")
-            filter_more = check_yes_no(filter_more)
+            filter_more = validate_input(input("Do you wish to filter recommendations by another genre? (Y/N): "), "Y/N")
 
             if filter_more == "N":
                 for show in sorted_recommendations:
@@ -88,11 +79,9 @@ def get_recommendations(selected_genres):
                 while not selected_genres.is_empty():
                     selected_genres.pop()
                 start_again()
-            elif filter_more == "Y":
+            else:
                 genre_match = get_genre_list()
                 get_recommendations(genre_match)
-            else:
-                print("ERROR: USER INPUT") # should already be caught by while loop
         else:
             for show in sorted_recommendations:
                 print(f"    {show}")
@@ -104,28 +93,29 @@ def get_recommendations(selected_genres):
         print("ERROR: NO GENRE SELECTED") # should already be caught by len(genre_match) == 0 in get_genre()
 
 def start_again():
-    user_answer = input("\nDo you wish to start a new recommendation search? (Y/N): ")
-    user_answer = check_yes_no(user_answer)
+    user_answer = validate_input(input("\nDo you wish to start a new recommendation search? (Y/N): "), "Y/N")
 
     if user_answer == "N":
         exit()
-    elif user_answer == "Y":
+    else:
         genre_match = get_genre_list()
         get_recommendations(genre_match)
-    else:
-        print("ERROR: USER INPUT") # should already be caught by while loop
-        return start_again()
 
-def check_yes_no(user_answer):
-    user_answer = user_answer.strip().upper()
-    while user_answer not in {"Y", "N"}:
-        user_answer = input("Please type in Y or N?: ").strip().upper()
-    return user_answer
-
-def check_is_letters(user_answer):
+def validate_input(user_answer, input_type):
     user_answer = user_answer.strip().capitalize()
-    while not user_answer.isalpha():
-        user_answer = input("Please type in letters only: ").strip().capitalize()
+
+    if input_type == "Y/N":
+        while user_answer not in {"Y", "N"}:
+            user_answer = input("Please type in Y or N?: ").strip().upper()
+    elif input_type == "initial":
+        while len(user_answer) != 1 or not user_answer.isalpha():
+            user_answer = input("Please type in a single letter: ").strip().upper()
+    elif input_type == "letters":
+        while not user_answer.isalpha():
+            user_answer = input("Please type in letters only: ").strip().capitalize()
+    else:
+        raise ValueError("ERROR: Invalid input_type specified.")
+
     return user_answer
 
 welcome()
