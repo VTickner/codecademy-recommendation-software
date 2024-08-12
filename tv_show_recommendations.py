@@ -42,12 +42,9 @@ def get_genre(possible_genres):
         print(f"Finding recommendations for the genre: {selected_genres.peek()}")
         return selected_genres
     else:
-        genre = input("Type in the first few letters of the genre you wish to select from the above list: ").strip()
+        genre = input("Type in the first few letters of the genre you wish to select from the above list: ")
+        genre = check_is_letters(genre)
 
-        while not genre.isalpha():
-            genre = input("Please type in letters only: ").strip()
-
-        genre = genre.capitalize()
         genre_match = [tag for tag in possible_genres if tag.startswith(genre)]
 
         if len(genre_match) == 0:
@@ -123,6 +120,12 @@ def check_yes_no(user_answer):
     user_answer = user_answer.strip().upper()
     while user_answer not in {"Y", "N"}:
         user_answer = input("Please type in Y or N?: ").strip().upper()
+    return user_answer
+
+def check_is_letters(user_answer):
+    user_answer = user_answer.strip().capitalize()
+    while not user_answer.isalpha():
+        user_answer = input("Please type in letters only: ").strip().capitalize()
     return user_answer
 
 welcome()
