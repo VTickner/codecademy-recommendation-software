@@ -36,3 +36,7 @@ class Stack:
   
   def is_empty(self):
     return self.size == 0
+  
+  def clear_all(self):
+    while not self.is_empty():
+      self.pop()
