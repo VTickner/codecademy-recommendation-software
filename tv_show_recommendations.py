@@ -1,13 +1,18 @@
-from tv_shows import tv_shows
+import json
 from classes.stack import Stack
 
-genres = [genre for value in tv_shows.values() for genre in value.split(", ")]
+def load_transformed_dict(file_path):
+    with open(file_path, "r") as json_file:
+        return json.load(json_file)
+    
+shows_in_genres = load_transformed_dict("data.json")
+genres = [genre for genre in shows_in_genres.keys()]
 sorted_genres = sorted(set(genres))
-
 selected_genres = Stack()
 
 def welcome():
-    print(f"\nWelcome to UK TV shows recommendation software where there are {len(tv_shows)} UK TV shows to choose from!")
+    number_shows = len(set([show for shows in shows_in_genres.values() for show in shows]))
+    print(f"\nWelcome to UK TV shows recommendation software where there are {number_shows} UK TV shows to choose from!")
     print("Recommendations are chosen from the genre types that you select. So let's get started...\n")
 
 def get_genre_list():
@@ -61,7 +66,8 @@ def get_recommendations(selected_genres):
     while current_genre:
         current_genre_value = current_genre.get_value()
         genre_str += f"{current_genre_value}, "
-        recommendations.extend([key for key, value in tv_shows.items() if current_genre_value in value.split(", ")])
+        if current_genre_value in shows_in_genres:
+            recommendations.extend(shows_in_genres[current_genre_value])
         current_genre = current_genre.get_next_node()
     
     sorted_recommendations = sorted(set(show for show in recommendations if recommendations.count(show) == number_genres)) # only get shows that match all genres

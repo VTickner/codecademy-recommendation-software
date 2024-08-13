@@ -1,4 +1,4 @@
-tv_shows = {
+data_dict = {
     "Doctor Who": "Adventure, Drama, Family",
     "Sherlock": "Crime, Drama, Mystery",
     "Downton Abbey": "Drama, Romance",
