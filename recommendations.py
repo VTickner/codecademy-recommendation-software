@@ -1,6 +1,7 @@
 import json
 from data import data_items, data_categories
 from classes.stack import Stack
+from quicksort import quicksort
 
 def load_transformed_dict(file_path):
     with open(file_path, "r") as json_file:
@@ -9,8 +10,8 @@ def load_transformed_dict(file_path):
 data_items = data_items
 data_categories = data_categories
 items_in_categories = load_transformed_dict("data.json")
-categories = [category for category in items_in_categories.keys()]
-sorted_categories = sorted(set(categories))
+categories = set([category for category in items_in_categories.keys()])
+sorted_categories = quicksort(list(categories), 0, len(categories) -1)
 selected_categories = Stack()
 
 def welcome():
@@ -84,7 +85,7 @@ def get_recommendations(selected_categories):
         start_again()
         return
     
-    sorted_recommendations = sorted(recommendations)
+    sorted_recommendations = quicksort(list(recommendations), 0, len(recommendations) - 1)
 
     print(f"\nFinding {data_items} recommendations that match the {data_categories} - {category_str[:-2]}:")
     
