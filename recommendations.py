@@ -63,16 +63,28 @@ def get_recommendations(selected_categories):
 
     number_categories = selected_categories.size
     current_category = selected_categories.top_item
-    recommendations = []
+    recommendations = None
     category_str = ""
+
     while current_category:
         current_category_value = current_category.get_value()
         category_str += f"{current_category_value}, "
         if current_category_value in items_in_categories:
-            recommendations.extend(items_in_categories[current_category_value])
+            current_items = set(items_in_categories[current_category_value])
+            
+            if recommendations is None:
+                recommendations = current_items
+            else:
+                recommendations.intersection_update(current_items)
+
         current_category = current_category.get_next_node()
     
-    sorted_recommendations = sorted(set(item for item in recommendations if recommendations.count(item) == number_categories)) # only get shows that match all genres
+    if recommendations is None:
+        print(f"\nNo recommendations found for the selected {data_categories}.")
+        start_again()
+        return
+    
+    sorted_recommendations = sorted(recommendations)
 
     print(f"\nFinding {data_items} recommendations that match the {data_categories} - {category_str[:-2]}:")
     
