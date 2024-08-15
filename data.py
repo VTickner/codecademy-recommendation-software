@@ -1,3 +1,6 @@
+data_items = "UK TV shows"
+data_categories = "genre"
+
 data_dict = {
     "Doctor Who": "Adventure, Drama, Family",
     "Sherlock": "Crime, Drama, Mystery",
