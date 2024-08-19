@@ -36,17 +36,7 @@ For this particular project I decided to create recommendation software for UK T
 
 ### Screenshots
 
-#### Instructions:
-
-![Instructions for how to use the recommendation software]() TODO
-
-#### Number of recommendations for selected genre:
-
-![Number of recommendations for genre/category]() TODO
-
-#### Filtered recommendations for multiple genres:
-
-![Filter recommendations by multiple genres/categories]() TODO
+![Screenshot of recommendation software](./img/screenshot.jpg)
 
 ## Process
 
@@ -113,27 +103,27 @@ There are a number of decisions I made as to how to approach and code this recom
 
   - As the original dictionary format was much more readable from a human perspective and easier for a human to add more data to (single line in dictionary per TV show) I decided to keep it and add extra functions and code to create a json file with the data in a dictionary with keys as genres and TV show titles as values. This code was placed in a separate file [create_json_data.py](./create_json_data.py) so that it could be run separately outside the main program to generate the json file of data that can then be imported into [recommendations.py](./recommendations.py) I deliberately used more generic naming so that it's possible to reuse with different data content (so long as data is stored in a dictionary in the same format).
 
-  ```python
-  import json
-  from data import data_dict
+    ```python
+    import json
+    from data import data_dict
 
-  def transform_dict(dictionary):
-      data_in_categories = {}
-      for item, categories in dictionary.items():
-          categories_list = categories.split(", ")
-          for category in categories_list:
-              if category not in data_in_categories:
-                  data_in_categories[category] = []
-              data_in_categories[category].append(item)
-      return data_in_categories
+    def transform_dict(dictionary):
+        data_in_categories = {}
+        for item, categories in dictionary.items():
+            categories_list = categories.split(", ")
+            for category in categories_list:
+                if category not in data_in_categories:
+                    data_in_categories[category] = []
+                data_in_categories[category].append(item)
+        return data_in_categories
 
-  def save_transformed_dict(file_path, transformed_dict):
-      with open(file_path, "w") as json_file:
-          json.dump(transformed_dict, json_file, indent=4)
+    def save_transformed_dict(file_path, transformed_dict):
+        with open(file_path, "w") as json_file:
+            json.dump(transformed_dict, json_file, indent=4)
 
-  transformed_dict = transform_dict(data_dict)
-  save_transformed_dict("data.json", transformed_dict)
-  ```
+    transformed_dict = transform_dict(data_dict)
+    save_transformed_dict("data.json", transformed_dict)
+    ```
 
 - I also chose to overhaul the naming of variables and functions to more generic names within the recommendation program, so that the program can be used with other datasets that are not UK TV shows, so long as they adhere to the data format required in [data.py](./data.py). (Change contents of variables according to data, e.g. if recommendations on restaurants, `data_items = "restaurant"`, `data_categories = "cuisine style"`, `data_dict = { "Restaurant Name": "cuisine_style" }`)
 
